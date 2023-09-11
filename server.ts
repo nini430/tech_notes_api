@@ -7,6 +7,8 @@ import mongoose from 'mongoose';
 dotenv.config();
 
 import rootRouter from './routes/root';
+import userRouter from './routes/user'
+
 import { logEvents, logger } from './middleware/logger';
 import errorHandler from './middleware/errorHandler';
 import corsOptions from './config/corsOptions';
@@ -24,6 +26,7 @@ app.use(express.json());
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.use('/', rootRouter);
+app.use('/users',userRouter);
 
 app.all('*', (req, res) => {
   if (req.accepts('html')) {
