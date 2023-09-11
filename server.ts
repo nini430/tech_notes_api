@@ -2,6 +2,8 @@ import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser'
 import cors from 'cors';
+import dotenv from 'dotenv'
+dotenv.config();
 
 import rootRouter from './routes/root';
 import { logger } from './middleware/logger';
@@ -10,6 +12,7 @@ import corsOptions from './config/corsOptions';
 
 const app = express();
 const PORT = process.env.PORT || 3500;
+const NODE_ENV= process.env.NODE_ENV;
 
 
 app.use(logger);
@@ -33,5 +36,5 @@ app.all('*', (req, res) => {
 app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running in ${NODE_ENV} mode on port ${PORT}`);
 });
