@@ -1,20 +1,22 @@
 import express from 'express';
 import path from 'path';
-import cookieParser from 'cookie-parser'
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 dotenv.config();
 
 import rootRouter from './routes/root';
-import { logger } from './middleware/logger';
+import { logEvents, logger } from './middleware/logger';
 import errorHandler from './middleware/errorHandler';
 import corsOptions from './config/corsOptions';
+import connectDB from './config/dbConn';
 
 const app = express();
 const PORT = process.env.PORT || 3500;
-const NODE_ENV= process.env.NODE_ENV;
+const NODE_ENV = process.env.NODE_ENV;
 
-
+connectDB();
 app.use(logger);
 app.use(cookieParser());
 app.use(cors(corsOptions as any));
@@ -35,6 +37,16 @@ app.all('*', (req, res) => {
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server running in ${NODE_ENV} mode on port ${PORT}`);
+mongoose.connection.once('open', () => {
+  console.log('Mongodb Connected!');
+  app.listen(PORT, () => {
+    console.log(`Server running in ${NODE_ENV} mode on port ${PORT}`);
+  });
+});
+
+mongoose.connection.on('error', (err) => {
+  logEvents(
+    `${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`,
+    'mongoError.log'
+  );
 });
