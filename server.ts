@@ -7,7 +7,8 @@ import mongoose from 'mongoose';
 dotenv.config();
 
 import rootRouter from './routes/root';
-import userRouter from './routes/user'
+import userRouter from './routes/user';
+import noteRouter from './routes/note';
 
 import { logEvents, logger } from './middleware/logger';
 import errorHandler from './middleware/errorHandler';
@@ -27,6 +28,7 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.use('/', rootRouter);
 app.use('/users',userRouter);
+app.use('/notes',noteRouter);
 
 app.all('*', (req, res) => {
   if (req.accepts('html')) {

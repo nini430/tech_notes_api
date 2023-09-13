@@ -8,6 +8,7 @@ const errorHandler = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(err)
   const message = `${err.name}: ${err.message}\t${req.method}\t${req.url}\t${req.headers.origin}`;
   await logEvents(message, 'reqError.log');
 
